@@ -9,4 +9,4 @@
 ## Wiki
 - Puede acceder a la Wiki desde el siguiente [enlace][link]
 
-[link]: https://github.com/asecino32/GRUPO6-2024-PROYINF.wiki.git
+[link]: https://github.com/asecino32/GRUPO6-2024-PROYINF.wiki.git](https://github.com/asecino32/GRUPO6-2024-PROYINF/wiki
