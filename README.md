@@ -6,4 +6,4 @@
 ## Video de la presentacion del cliente: 
 - https://www.youtube.com/watch?v=abJau21SDIk
 ## Wiki
-- https://github.com/asecino32/GRUPO6-2024-PROYINF.wiki.git
+- se puede consultar la wiki aqui[https://github.com/asecino32/GRUPO6-2024-PROYINF/wiki]
