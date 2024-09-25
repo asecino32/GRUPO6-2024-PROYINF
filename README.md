@@ -3,7 +3,7 @@
 - Eduardo Rodríguez 202273593-7
 - Sebastián Huerta 202273590-2
 - Sebastián Muñoz 202273534-1
-- Sebastian Olea 202273566-K<br/>
+- Sebastián Olea 202273566-K<br/>
 ## Video de la presentacion del cliente: 
 - Puedes ver la presentacion [aqui][video]
 
