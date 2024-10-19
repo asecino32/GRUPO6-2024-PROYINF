@@ -1,12 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 # Create your models here.
 class Usuarios(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     tipo_usuario = models.SmallIntegerField(blank=False)
     nombre_usuario = models.CharField(max_length=50, unique=True, blank=False)
-    password =  models.CharField(max_length=50, blank=False)
     correo_usuario = models.CharField(max_length=100, unique=True, blank=False)
+    password = models.CharField(max_length=128)
 
 class Fuente(models.Model):
     id_fuente = models.AutoField(primary_key=True)
