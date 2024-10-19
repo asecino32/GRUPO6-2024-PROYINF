@@ -11,20 +11,20 @@
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Cree su Cuenta</h2>
 
-              <form>
-
+              <form action="/index/new/" method="POST">
+                {% csrf_token %}
                 <div data-mdb-input-init class="form-outline mb-4">
-                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" />
+                  <input type="text" name="nombre" id="form3Example1cg" class="form-control form-control-lg" />
                   <label class="form-label" for="form3Example1cg">Ingrese su nombre</label>
                 </div>
 
                 <div data-mdb-input-init class="form-outline mb-4">
-                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" />
+                  <input type="email" name="correo" id="form3Example3cg" class="form-control form-control-lg" />
                   <label class="form-label" for="form3Example3cg">Ingrese su Correo electrónico</label>
                 </div>
 
                 <div data-mdb-input-init class="form-outline mb-4">
-                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" />
+                  <input type="password" name="password" id="form3Example4cg" class="form-control form-control-lg" />
                   <label class="form-label" for="form3Example4cg">Ingrese su Contraseña</label>
                 </div>
 
@@ -36,11 +36,11 @@
                 
 
                 <div class="d-flex justify-content-center">
-                  <button  type="button" data-mdb-button-init
+                  <button data-mdb-button-init
                     data-mdb-ripple-init class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Registrarse</button>
                 </div>
 
-                <p class="text-center text-muted mt-5 mb-0">¿Ya tiene una cuenta? <a href="login"
+                <p class="text-center text-muted mt-5 mb-0">¿Ya tiene una cuenta? <a href="/index/login"
                     class="fw-bold text-body"><u>Ingrese aquí</u></a></p>
 
               </form>
