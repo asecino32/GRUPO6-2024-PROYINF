@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Animación para los botones en la barra de navegación */
+.navbar-nav .btn {
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.navbar-nav .btn:hover {
+    background-color: #0056b3; /* Cambiar color de fondo al pasar el ratón */
+    transform: translateY(-3px); /* Mueve el botón hacia arriba */
+}
+
+/* Animación de fade-in */
+.animated-header {
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out forwards;
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+/* Para que la barra de navegación sea transparente */
+.navbar-transparent {
+    background-color: transparent;
+    border: none;
+}
+
+/* Estilo de los botones sin fondo blanco */
+.custom-btn {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: white;
+    color: black;
+}
