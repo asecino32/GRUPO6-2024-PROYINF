@@ -3,40 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Boletines y Solicitud de Fuentes</title>
+    <title>Home - Consulta de Boletines</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <!-- Encabezado -->
-    <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h1>¡Bienvenido a la Sección de Boletines y Fuentes!</h1>
-        <p class="lead">Gestiona tus boletines y solicita fuentes de información</p>
+    <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: auto; padding: 50px 20px;">
+        {% if request.user.is_authenticated %}
+        <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
+        {% else %}
+            <h1>Bienvenido, invitado a la Sección de Boletines!</h1>
+        {% endif %}    
+    
     </header>
 
     <!-- Contenido Principal con fondo -->
-    <main class="container my-5" style="background-image: url('https://img.freepik.com/vector-premium/fondo-escena-amarilla-verano-3d_317810-4653.jpg?w=1060'); background-size: cover; padding: 20px; border-radius: 10px;">
+    <main class="container my-5" style="background-image: url('https://img.freepik.com/vector-premium/fondo-escena-amarilla-verano-3d_317810-4653.jpg?w=1060'); background-size: cover; padding: 20px; border-radius: 10px; min-height: 60vh;">
         <div class="row">
             <!-- Sección de Boletines -->
             <div class="col-md-6">
-                <h2>Enviar Boletín</h2>
+                <h2>Filtrar Boletines</h2>
                 <form method="POST">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="titulo" class="form-label">Título del Boletín</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ingrese el título">
                     </div>
-                    <div class="mb-3">
-                        <label for="contenido" class="form-label">Contenido del Boletín</label>
-                        <textarea class="form-control" id="contenido" name="contenido" rows="4" required></textarea>
+
+                    <div class="form-group">
+                        <label for="ciudad_tratada">Ciudad tratada</label>
+                        <input type="text" class="form-control" id="ciudad_tratada" name="ciudad_tratada" placeholder="Ingrese la ciudad">
                     </div>
-                    <button type="submit" class="btn btn-primary">Enviar Boletín</button>
+                    
+                    <div class="form-group">
+                        <label for="tematica">Temática</label>
+                        <input type="text" class="form-control" id="tematica" name="tematica" placeholder="Ingrese la temática">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_creacion">Fecha de creación</label>
+                        <input type="date" class="form-control" id="fecha_creacion" name="fecha_creacion">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
                 </form>
+            </div>
+                <!-- Resultados de los Boletines -->
+            <div class="col-md-6">
+                <h2>Resultados</h2>
+                <ul>
+                    {% for boletin in boletines %}
+                        <li>
+                            <h3>{{ boletin.titulo }}</h3>
+                            <p>Ciudad: {{ boletin.ciudad_tratada }}</p>
+                            <p>Temática: {{ boletin.tematica }}</p>
+                            <p>Fecha de creación: {{ boletin.fecha_creacion }}</p>
+                        </li>
+                    {% empty %}
+                        <li>No se encontraron boletines.</li>
+                    {% endfor %}
+                </ul>
+            </div>
             </div>
 
             <!-- Sección de Solicitud de Fuentes -->
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
                 <h2>Solicitar Fuente</h2>
                 <form method="POST">
                     {% csrf_token %}
@@ -55,7 +89,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Solicitar Fuente</button>
                 </form>
-            </div>
+            </div> -->
         </div>
     </main>
 
