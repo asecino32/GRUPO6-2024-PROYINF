@@ -15,7 +15,7 @@
         {% if request.user.is_authenticated %}
         <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
         {% else %}
-            <h1>Bienvenido, invitado a la Sección de Boletines!</h1>
+            <h1>Suba las nuevas fuentes!</h1>
         {% endif %}    
     
     </header>
@@ -26,7 +26,7 @@
             <!-- Sección de Boletines -->
             <div class="col-md-6">
                 <h2>Filtrar Boletines</h2>
-                <form action="/index/boletin/" method="POST">
+                <form action="/index/fuente/" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="titulo">Título</label>
@@ -34,49 +34,37 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ciudad_tratada">Ciudad tratada</label>
-                        <input type="text" class="form-control" id="ciudad_tratada" name="ciudad_tratada" placeholder="Ingrese la ciudad">
+                        <label for="ciudad_tratada">Descripción</label>
+                        <input type="text" class="form-control" id="ciudad_tratada" name="descripcion" placeholder="Ingrese la ciudad">
                     </div>
                     
                     <div class="form-group">
-                        <label for="tematica">Temática</label>
-                        <input type="text" class="form-control" id="tematica" name="tematica" placeholder="Ingrese la temática">
+                        <label for="tematica">URL</label>
+                        <input type="text" class="form-control" id="tematica" name="url" placeholder="Ingrese la temática">
                     </div>
                     
-                    <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
+                    <button type="submit" class="btn btn-primary mt-3">Subir</button>
                 </form>
-            </div>
-                <!-- Resultados de los Boletines -->
-            <div class="col-md-6">
-                <h2>Resultados</h2>
-                    <ul>
-                        {% for fuente in resultados %}
-                            <li>Título: {{ fuente.titulo }} <br>
-                                Ciudad tratada: {{ fuente.ciudad_tratada }} <br>
-                                Temática: {{ fuente.tematica }} <br>
-                                Fecha: {{ fuente.fecha_creacion }} <br></li>
-                        {% empty %}
-                            <li>No se encontraron resultados</li>
-                        {% endfor %}
-                    </ul>
-
-            </div>
-            </div>
-
+            
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            
         </div>
     </main>
 
     <!-- Pie de Página -->
     <footer class="bg-light text-center py-3">
-        &copy; 2024 Mi Sitio. Todos los derechos reservados.
         <p style="margin: 0; padding: 0 20px;">
-            <a href="/index/home/agregar_fuentes" class="fw-bold text-body" style="float:left; margin-right: auto;">
-                ¿Quiere agregar más fuentes?</a>
-            <a href="/index/home/subir_boletines" class="fw-bold text-body" style="float:right; margin-left: auto;">
-                ¿Quiere subir nuevos boletines?</a>
+            
+            <a href="/index/home" class="fw-bold text-body">
+                Volver</a>
         </p>
     </footer>
-    
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Usuarios
-from .models import Boletin
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.hashers import make_password
+from django.contrib import messages
+from .models import Usuarios, Boletin, Fuente
+from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
@@ -17,7 +16,7 @@ def guardar_registro(request):
     hashed_password = make_password(request.POST['password'])
     usuario = Usuarios(tipo_usuario = 0, nombre_usuario = request.POST['nombre'], password= hashed_password ,correo_usuario = request.POST['correo'])
     usuario.save()
-    return redirect('/index/register')
+    return redirect('/index/login')
 
 def login(request):
     return render(request, 'login.html')
@@ -76,3 +75,32 @@ def filtrar_boletines(request):
 
     # Renderizar la plantilla 'home.html' y pasar los boletines filtrados
     return render(request, 'home.html', {'boletines': boletines})
+
+def subir_boletines(request):
+    return render(request, 'subir_boletines.html')
+
+def agregar_fuentes(request):
+    return render(request, 'agregar_fuentes.html')
+
+def guardar_fuente(request):
+    fuente = Fuente(titulo = request.POST['titulo'], descripcion= request.POST['descripcion'] , fuente_activa = 1, url = request.POST['url'])
+    fuente.save()
+    messages.success(request, 'Fuente subida con éxito.')
+    return redirect('/index/home/agregar_fuentes')
+
+def consultar_boletin(request):
+    if request.method == 'POST':
+        titulo = request.POST['titulo']
+        ciudad_tratada = request.POST['ciudad_tratada']
+        tematica = request.POST['tematica']
+
+        resultados = Boletin.objects.filter(
+            titulo=titulo,
+            ciudad_tratada=ciudad_tratada,
+            tematica=tematica
+        )
+
+        return render(request, 'home.html', {'resultados': resultados})
+
+    # Si no es POST, simplemente redirigir o mostrar un formulario vacío
+    return redirect('/index/home')
