@@ -1,0 +1,9 @@
+<h1>Detalles de "{{ fuente.titulo }}"</h1>
+<p>Estado de la Fuente: 
+    {% if fuente.fuente_activa == 0 %}
+        Inactiva
+    {% else %}
+        Activa
+    {% endif %}</p>
+<p>Descripción: {{ fuente.descripcion }}</p>
+<p>URL: {{ fuente.url }}</p>

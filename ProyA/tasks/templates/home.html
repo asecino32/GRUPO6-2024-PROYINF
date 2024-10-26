@@ -54,7 +54,9 @@
                             <li>Título: {{ fuente.titulo }} <br>
                                 Ciudad tratada: {{ fuente.ciudad_tratada }} <br>
                                 Temática: {{ fuente.tematica }} <br>
-                                Fecha: {{ fuente.fecha_creacion }} <br></li>
+                                Fecha: {{ fuente.fecha_creacion }} <br>
+                                <a href="{% url 'ver_fuente' fuente.fuente_boletin_id %}">(Ver fuentes)</a><br>
+                            </li>
                         {% empty %}
                             <li>No se encontraron resultados</li>
                         {% endfor %}

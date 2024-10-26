@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Usuarios, Boletin, Fuente
 from django.contrib.auth.hashers import check_password, make_password
@@ -104,3 +104,10 @@ def consultar_boletin(request):
 
     # Si no es POST, simplemente redirigir o mostrar un formulario vacío
     return redirect('/index/home')
+
+def ver_fuente(request, fuente_id):
+    # Obtener el objeto Fuente usando el ID
+    fuente = get_object_or_404(Fuente, id_fuente=fuente_id)
+    
+    # Renderizar el template con los detalles del objeto
+    return render(request, 'ver_fuente.html', {'fuente': fuente})
