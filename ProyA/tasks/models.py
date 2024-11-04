@@ -26,4 +26,3 @@ class Boletin(models.Model):
     ciudad_tratada = models.CharField(max_length=100)
     tematica = models.CharField(max_length=100)
     fuente_boletin = models.ForeignKey(Fuente, on_delete=models.CASCADE, related_name='fuente')
-    
