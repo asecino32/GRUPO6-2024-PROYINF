@@ -79,8 +79,24 @@ def filtrar_boletines(request):
 def subir_boletines(request):
     return render(request, 'subir_boletines.html')
 
+def eliminar_boletin(request):
+    return render(request, 'eliminar_boletin.html')
+
+def eliminar_bol(request):
+    boletin = Boletin(id_boletin = request.POST['id'])
+    boletin.delete()
+    messages.success(request, 'Se elimino exitosamente el boletin.')
+    return redirect('/index/home/eliminar_boletin')
+
 def agregar_fuentes(request):
     return render(request, 'agregar_fuentes.html')
+
+def guardar_boletines(request):
+    boletin = Boletin(titulo = request.POST['titulo'], ciudad_tratada = request.POST['ciudad_tratada'], tematica = request.POST['tematica'] ,
+                      fuente_boletin_id = request.POST['fuente'], archivo = request.FILES['archivo_pdf'])
+    boletin.save()
+    messages.success(request, 'Boletin subido con éxito.')
+    return redirect('/index/home/subir_boletines')
 
 def guardar_fuente(request):
     fuente = Fuente(titulo = request.POST['titulo'], descripcion= request.POST['descripcion'] , fuente_activa = 1, url = request.POST['url'])

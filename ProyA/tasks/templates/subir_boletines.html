@@ -15,7 +15,7 @@
         {% if request.user.is_authenticated %}
         <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
         {% else %}
-            <h1>Suba las nuevas fuentes!</h1>
+            <h1>Suba el boletin!</h1>
         {% endif %}    
     
     </header>
@@ -26,7 +26,7 @@
             <!-- Sección de Boletines -->
             <div class="col-md-6">
                 <h2>Filtrar Boletines</h2>
-                <form action="/index/fuente/" method="POST">
+                <form action="/index/subir_boletin/" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="titulo">Título</label>
@@ -34,15 +34,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="ciudad_tratada">Descripción</label>
-                        <input type="text" class="form-control" id="ciudad_tratada" name="descripcion" placeholder="Ingrese la ciudad">
+                        <label for="ciudad_tratada">Ciudad Tratada</label>
+                        <input type="text" class="form-control" id="ciudad_tratada" name="ciudad_tratada" placeholder="Ingrese la ciudad">
                     </div>
                     
                     <div class="form-group">
-                        <label for="tematica">URL</label>
-                        <input type="text" class="form-control" id="tematica" name="url" placeholder="Ingrese la temática">
+                        <label for="tematica">Temática</label>
+                        <input type="text" class="form-control" id="tematica" name="tematica" placeholder="Ingrese la temática">
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label for="fuente">Fuente</label>
+                        <input type="text" class="form-control" id="fuente" name="fuente" placeholder="Ingrese la fuente">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="archivo_pdf">Subir PDF</label>
+                        <input type="file" class="form-control-file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf">
+                    </div>
+
                     <button type="submit" class="btn btn-primary mt-3">Subir</button>
                 </form>
             
@@ -60,10 +70,12 @@
     <!-- Pie de Página -->
     <footer class="bg-light text-center py-3">
         <p style="margin: 0; padding: 0 20px;">
-            
-            <a href="/index/home" class="fw-bold text-body">
+            <a href="/index/home" class="fw-bold text-body" style="float:left; margin-right: auto;">
                 Volver</a>
+            <a href="/index/home/eliminar_boletin" class="fw-bold text-body" style="float:right; margin-left: auto; text-decoration: none;">
+                <span style="color: red;">¿Desea eliminar un boletin?</span></a>
         </p>
+        <br>
     </footer>
 
     <!-- Bootstrap JS -->
