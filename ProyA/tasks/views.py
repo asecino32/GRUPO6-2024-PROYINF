@@ -112,7 +112,7 @@ def consultar_boletin(request):
 
         resultados = Boletin.objects.filter(
             titulo=titulo,
-            ciudad_tratada=ciudad_tratada,
+            ciudad_tratada__icontains=ciudad_tratada,
             tematica=tematica
         )
 
