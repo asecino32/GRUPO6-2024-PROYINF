@@ -13,11 +13,10 @@
     <!-- Encabezado -->
     <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: auto; padding: 50px 20px;">
         {% if request.user.is_authenticated %}
-        <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
+        <h1>Bienvenido, {{ user.username }}, a la Sección de Boletines!</h1>
         {% else %}
             <h1>Bienvenido, invitado a la Sección de Boletines!</h1>
         {% endif %}    
-    
     </header>
 
     <!-- Contenido Principal con fondo -->
@@ -46,25 +45,31 @@
                     <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
                 </form>
             </div>
-                <!-- Resultados de los Boletines -->
+            
+            <!-- Resultados de los Boletines -->
             <div class="col-md-6">
                 <h2>Resultados</h2>
-                    <ul>
-                        {% for fuente in resultados %}
-                            <li>Título: {{ fuente.titulo }} <br>
-                                Ciudad tratada: {{ fuente.ciudad_tratada }} <br>
-                                Temática: {{ fuente.tematica }} <br>
-                                Fecha: {{ fuente.fecha_creacion }} <br>
-                                <a href="{% url 'ver_fuente' fuente.fuente_boletin_id %}">(Ver fuentes)</a><br>
-                            </li>
-                        {% empty %}
-                            <li>No se encontraron resultados</li>
-                        {% endfor %}
-                    </ul>
-
+                <ul>
+                    {% for fuente in resultados %}
+                        <li>
+                            <strong>Título:</strong> {{ fuente.titulo }} <br>
+                            <strong>Ciudad tratada:</strong> {{ fuente.ciudad_tratada }} <br>
+                            <strong>Temática:</strong> {{ fuente.tematica }} <br>
+                            <strong>Fecha:</strong> {{ fuente.fecha_creacion }} <br>
+                            <a href="{% url 'ver_fuente' fuente.fuente_boletin_id %}">(Ver fuentes)</a><br>
+                            
+                            {% if fuente.archivo_pdf %}
+                                <strong>PDF:</strong> 
+                                <a href="{{ fuente.archivo_pdf.url }}" target="_blank" class="btn btn-link">Ver PDF</a>
+                            {% else %}
+                                <strong>PDF:</strong> <span>No disponible</span>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>No se encontraron resultados</li>
+                    {% endfor %}
+                </ul>
             </div>
-            </div>
-
         </div>
     </main>
 
@@ -78,7 +83,6 @@
         </p>
         <br>
     </footer>
-    
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

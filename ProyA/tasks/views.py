@@ -92,11 +92,25 @@ def agregar_fuentes(request):
     return render(request, 'agregar_fuentes.html')
 
 def guardar_boletines(request):
-    boletin = Boletin(titulo = request.POST['titulo'], ciudad_tratada = request.POST['ciudad_tratada'], tematica = request.POST['tematica'] ,
-                      fuente_boletin_id = request.POST['fuente'], archivo = request.FILES['archivo_pdf'])
-    boletin.save()
-    messages.success(request, 'Boletin subido con éxito.')
-    return redirect('/index/home/subir_boletines')
+    if request.method == 'POST':
+        archivo_pdf = request.FILES.get('archivo_pdf')  # Captura el archivo PDF
+
+        if not archivo_pdf:  # Verifica que el archivo PDF sea obligatorio
+            messages.error(request, 'El archivo PDF es obligatorio.')
+            return redirect('/index/home/subir_boletines')
+
+        boletin = Boletin(
+            titulo=request.POST['titulo'],
+            ciudad_tratada=request.POST['ciudad_tratada'],
+            tematica=request.POST['tematica'],
+            fuente_boletin_id = request.POST['fuente'],
+            archivo=archivo_pdf
+        )
+        boletin.save()
+
+        messages.success(request, 'Boletín subido con éxito.')
+        return redirect('/index/home/subir_boletines')
+    
 
 def guardar_fuente(request):
     fuente = Fuente(titulo = request.POST['titulo'], descripcion= request.POST['descripcion'] , fuente_activa = 1, url = request.POST['url'])
@@ -104,22 +118,29 @@ def guardar_fuente(request):
     messages.success(request, 'Fuente subida con éxito.')
     return redirect('/index/home/agregar_fuentes')
 
+from django.db.models import Q
+
 def consultar_boletin(request):
     if request.method == 'POST':
-        titulo = request.POST['titulo']
-        ciudad_tratada = request.POST['ciudad_tratada']
-        tematica = request.POST['tematica']
+        titulo = request.POST.get('titulo', '').strip()
+        ciudad_tratada = request.POST.get('ciudad_tratada', '').strip()
+        tematica = request.POST.get('tematica', '').strip()
 
-        resultados = Boletin.objects.filter(
-            titulo=titulo,
-            ciudad_tratada__icontains=ciudad_tratada,
-            tematica=tematica
-        )
+        consulta = Q()
+        if titulo:
+            consulta &= Q(titulo__icontains=titulo)
+        if ciudad_tratada:
+            consulta &= Q(ciudad_tratada__icontains=ciudad_tratada)
+        if tematica:
+            consulta &= Q(tematica__icontains=tematica)
+
+        resultados = Boletin.objects.filter(consulta)
 
         return render(request, 'home.html', {'resultados': resultados})
 
-    # Si no es POST, simplemente redirigir o mostrar un formulario vacío
+    # Si no es POST, redirige al formulario
     return redirect('/index/home')
+
 
 def ver_fuente(request, fuente_id):
     # Obtener el objeto Fuente usando el ID
