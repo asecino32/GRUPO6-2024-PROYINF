@@ -4,6 +4,7 @@ from .models import Usuarios, Boletin, Fuente
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -118,13 +119,12 @@ def guardar_fuente(request):
     messages.success(request, 'Fuente subida con éxito.')
     return redirect('/index/home/agregar_fuentes')
 
-from django.db.models import Q
-
 def consultar_boletin(request):
     if request.method == 'POST':
         titulo = request.POST.get('titulo', '').strip()
         ciudad_tratada = request.POST.get('ciudad_tratada', '').strip()
         tematica = request.POST.get('tematica', '').strip()
+        fecha = request.POST.get('fecha', '').strip()
 
         consulta = Q()
         if titulo:
@@ -133,12 +133,20 @@ def consultar_boletin(request):
             consulta &= Q(ciudad_tratada__icontains=ciudad_tratada)
         if tematica:
             consulta &= Q(tematica__icontains=tematica)
+        if fecha:
+            try:
+                fecha_inicio = datetime.strptime(fecha, '%Y-%m-%d').date()
+
+                fecha_actual = datetime.now().date()
+
+                consulta &= Q(fecha_creacion__range=(fecha_inicio, fecha_actual))
+            except ValueError:
+                pass
 
         resultados = Boletin.objects.filter(consulta)
 
         return render(request, 'home.html', {'resultados': resultados})
 
-    # Si no es POST, redirige al formulario
     return redirect('/index/home')
 
 

@@ -41,6 +41,11 @@
                         <label for="tematica">Temática</label>
                         <input type="text" class="form-control" id="tematica" name="tematica" placeholder="Ingrese la temática">
                     </div>
+
+                    <div class="form-group">
+                        <label for="fecha">Fecha del boletín más antiguo a buscar</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" placeholder="Seleccione una fecha">
+                    </div>
                     
                     <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
                 </form>
@@ -58,9 +63,9 @@
                             <strong>Fecha:</strong> {{ fuente.fecha_creacion }} <br>
                             <a href="{% url 'ver_fuente' fuente.fuente_boletin_id %}">(Ver fuentes)</a><br>
                             
-                            {% if fuente.archivo_pdf %}
+                            {% if fuente.archivo %}
                                 <strong>PDF:</strong> 
-                                <a href="{{ fuente.archivo_pdf.url }}" target="_blank" class="btn btn-link">Ver PDF</a>
+                                <a href="{{ fuente.archivo.url }}" target="_blank" class="btn btn-link">Ver PDF</a>
                             {% else %}
                                 <strong>PDF:</strong> <span>No disponible</span>
                             {% endif %}
