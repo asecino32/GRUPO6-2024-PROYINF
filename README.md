@@ -9,6 +9,11 @@
 
 [video]: https://www.youtube.com/watch?v=abJau21SDIk
 
+## Video de los resultados finales: 
+- Puedes ver el video [aqui][video]
+
+[video]: https://www.youtube.com/watch?v=Tnv5N3LQiko
+
 ## Wiki
 - Puede acceder a la Wiki desde el siguiente [enlace][link]
 
