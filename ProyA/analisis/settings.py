@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 
 
+#AUTH_USER_MODEL = 'tasks.CustomUser'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -85,7 +87,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "documentos",
         "USER": "postgres",
-        "PASSWORD": "root",
+        "PASSWORD": "anal32",
         "HOST": "127.0.0.3",
         "PORT": "5432",
     }

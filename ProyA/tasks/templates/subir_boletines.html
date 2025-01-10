@@ -13,7 +13,7 @@
     <!-- Encabezado -->
     <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: auto; padding: 50px 20px;">
         {% if request.user.is_authenticated %}
-        <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
+        <h1>Hola, {{ user.username }}, acá puedes subir tus boletines!</h1>
         {% else %}
             <h1>Suba el boletin!</h1>
         {% endif %}    
@@ -26,10 +26,10 @@
             <!-- Sección de Boletines -->
             <div class="col-md-6">
                 <h2>Subir Boletines</h2>
-                <form action="/index/subir_boletin/" method="POST" enctype="multipart/form-data">
+                <form action="/index/save_boletin/" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="titulo">Título</label>
+                        <label for="titulo">Título*</label>
                         <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ingrese el título">
                     </div>
 
@@ -44,8 +44,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="fuente">Fuente</label>
-                        <input type="text" class="form-control" id="fuente" name="fuente" placeholder="Ingrese la id de la fuente que referencia el articulo">
+                        <label for="fuente">Fuente*</label>
+                        <input type="number" class="form-control" id="fuente" name="fuente" placeholder="Ingrese la id de la fuente que referencia el articulo">
                     </div>
                     <br>
                     <div class="form-group">
@@ -74,6 +74,9 @@
                 Volver</a>
             <a href="/index/home/eliminar_boletin" class="fw-bold text-body" style="float:right; margin-left: auto; text-decoration: none;">
                 <span style="color: red;">¿Desea eliminar un boletin?</span></a>
+
+            <a href="/index/home/agregar_fuentes" class="fw-bold text-body" style="float:right; margin-left: auto; text-decoration: none;">
+                <span style="color: blue;">¿Desea subir otra fuente?</span></a>
         </p>
         <br>
     </footer>

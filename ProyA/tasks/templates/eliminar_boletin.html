@@ -13,7 +13,7 @@
     <!-- Encabezado -->
     <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: auto; padding: 50px 20px;">
         {% if request.user.is_authenticated %}
-        <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
+        <h1>Hola, {{ user.username }}, acá puedes eliminar los boletines!</h1>
         {% else %}
             <h1>Ingrese el numero del boletin a eliminar</h1>
         {% endif %}    
@@ -26,7 +26,7 @@
             <!-- Sección de Boletines -->
             <div class="col-md-6">
                 <h2>Eliminar Boletines</h2>
-                <form action="/index/eliminar_boletin/" method="POST" enctype="multipart/form-data">
+                <form action="/index/del_boletin/" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="titulo">Id del boletin</label>
@@ -50,7 +50,7 @@
     <!-- Pie de Página -->
     <footer class="bg-light text-center py-3">
         <p style="margin: 0; padding: 0 20px;">
-            <a href="/index/home/subir_boletines" class="fw-bold text-body">
+            <a href="/index/home" class="fw-bold text-body">
                 Volver</a>
         </p>
     </footer>

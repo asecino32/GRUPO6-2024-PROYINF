@@ -1,58 +1,80 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Usuarios, Boletin, Fuente
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
-from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+
+from .models import Boletin, Fuente
+
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
-def register(request):
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # Validaciones
+        if not username or not email or not password1:
+            messages.error(request, 'Todos los campos son obligatorios.')
+            return render(request, 'register.html')
+
+        if password1 != password2:
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return render(request, 'register.html')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El nombre de usuario ya está en uso.')
+            return render(request, 'register.html')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'El correo electrónico ya está registrado.')
+            return render(request, 'register.html')
+
+        # Crear el usuario
+        user = User(username=username, email=email, password=make_password(password1))
+        user.save()
+
+        messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
+        login(request, user)  # Inicia sesión automáticamente después del registro
+        return redirect('home')  
     return render(request, 'register.html')
 
-def guardar_registro(request):
-    hashed_password = make_password(request.POST['password'])
-    usuario = Usuarios(tipo_usuario = 0, nombre_usuario = request.POST['nombre'], password= hashed_password ,correo_usuario = request.POST['correo'])
-    usuario.save()
-    return redirect('/index/login')
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-def login(request):
+        # Autenticar usuario
+        user = authenticate(request, username=username, password=password)
+        # if user is None:
+        #     user = authenticate(request, email=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Bienvenido, {username}!')
+            return redirect('home') 
+        else:
+            messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
+            return render(request, 'login.html')
+
     return render(request, 'login.html')
 
-#@login_required
-def home(request):
-    return render(request, 'home.html')
-
-""" def home(request):
+def home_view(request):
     if request.user.is_authenticated:
         return render(request, 'home.html', {'usuario': request.user})
     else:
         return render(request, 'login.html') 
-"""
 
-def comprobar_registro(request):
-    nombre = request.POST.get('nombre_usuario')
-    correo = request.POST.get('nombre_usuario')
-    contra = request.POST.get('password')
-    print(contra)
-    try:
-        usuario = Usuarios.objects.get(Q(nombre_usuario=nombre) | Q(correo_usuario=correo))
-        
-        if check_password(contra, usuario.password):
-            print("Usuario valido")
-            return redirect('/index/home')
-        else:
-            # Contraseña incorrecta
-            print("Contraseña incorrecta")
-            return redirect('/index/login')
-
-    except Usuarios.DoesNotExist:
-        print("Usuario o Correo no estan registrados")
-        return redirect('/index/login')
-    
+def logout_view(request):
+    logout(request) 
+    return redirect('index')
 
 def filtrar_boletines(request):
     boletines = Boletin.objects.all()  # Obtener todos los boletines como punto de partida
@@ -77,47 +99,69 @@ def filtrar_boletines(request):
     # Renderizar la plantilla 'home.html' y pasar los boletines filtrados
     return render(request, 'home.html', {'boletines': boletines})
 
-def subir_boletines(request):
+def subir_boletines_view(request):
     return render(request, 'subir_boletines.html')
 
-def eliminar_boletin(request):
-    return render(request, 'eliminar_boletin.html')
-
-def eliminar_bol(request):
-    boletin = Boletin(id_boletin = request.POST['id'])
-    boletin.delete()
-    messages.success(request, 'Se elimino exitosamente el boletin.')
-    return redirect('/index/home/eliminar_boletin')
-
-def agregar_fuentes(request):
-    return render(request, 'agregar_fuentes.html')
-
-def guardar_boletines(request):
+def guardar_boletines_view(request):
     if request.method == 'POST':
         archivo_pdf = request.FILES.get('archivo_pdf')  # Captura el archivo PDF
-
+        titulo_boletin=request.POST['titulo']
+        fuente_boletin = request.POST['fuente']
         if not archivo_pdf:  # Verifica que el archivo PDF sea obligatorio
             messages.error(request, 'El archivo PDF es obligatorio.')
-            return redirect('/index/home/subir_boletines')
-
+            return redirect('subir_boletines')
+        if not titulo_boletin:
+            messages.error(request, 'El titulo del boletin es obligatorio.')
+            return redirect('subir_boletines')
+        if not fuente_boletin:
+            messages.error(request, 'La fuente del boletin es obligatoria.')
+            return redirect('subir_boletines')
+        
         boletin = Boletin(
-            titulo=request.POST['titulo'],
+            titulo=titulo_boletin,
             ciudad_tratada=request.POST['ciudad_tratada'],
             tematica=request.POST['tematica'],
-            fuente_boletin_id = request.POST['fuente'],
+            fuente_boletin_id = fuente_boletin,
             archivo=archivo_pdf
         )
         boletin.save()
 
         messages.success(request, 'Boletín subido con éxito.')
-        return redirect('/index/home/subir_boletines')
-    
+        return redirect('subir_boletines')
 
-def guardar_fuente(request):
-    fuente = Fuente(titulo = request.POST['titulo'], descripcion= request.POST['descripcion'] , fuente_activa = 1, url = request.POST['url'])
-    fuente.save()
-    messages.success(request, 'Fuente subida con éxito.')
-    return redirect('/index/home/agregar_fuentes')
+def guardar_fuente_view(request):
+    if request.method == 'POST':
+        titulo_fuente=request.POST['titulo']
+        
+        if not titulo_fuente:
+            messages.error(request, 'El titulo de la fuente es obligatorio.')
+            return redirect('agregar_fuentes')
+            
+        fuente = Fuente(
+            titulo = titulo_fuente, 
+            descripcion= request.POST['descripcion'] , 
+            fuente_activa = 1, 
+            url = request.POST['url']
+        )
+        fuente.save()
+        messages.success(request, 'Fuente subida con éxito.')
+        return redirect('agregar_fuentes')
+    
+def eliminar_boletin_view(request):
+    return render(request, 'eliminar_boletin.html')
+
+def del_boletin_view(request):
+    boletin = Boletin(id_boletin = request.POST['id'])
+    boletin.delete()
+    messages.success(request, 'Se elimino exitosamente el boletin.')
+    return redirect('eliminar_boletin')
+
+
+
+
+def agregar_fuentes_view(request):
+    return render(request, 'agregar_fuentes.html')
+
 
 def consultar_boletin(request):
     if request.method == 'POST':

@@ -13,7 +13,7 @@
     <!-- Encabezado -->
     <header class="text-white text-center py-5" style="background-image: url('https://img.freepik.com/vector-gratis/gradiente-formas-geometricas-sobre-fondo-oscuro_23-2148423541.jpg?t=st=1729465874~exp=1729469474~hmac=922fc7cfb907abcad09fb20c1eaa3a93b9f51bd0007aa1d8b7546f31ee803f6a&w=996'); background-size: cover; height: auto; padding: 50px 20px;">
         {% if request.user.is_authenticated %}
-        <h1>Bienvenido, {{ user.username }},a la Sección de Boletines!</h1>
+        <h1>Hola, {{ user.username }}, acá puedes subir tus fuentes!</h1>
         {% else %}
             <h1>Suba las nuevas fuentes!</h1>
         {% endif %}    
@@ -26,10 +26,10 @@
             <!-- Sección de Boletines -->
             <div class="col-md-6">
                 <h2>Agregar Fuentes</h2>
-                <form action="/index/fuente/" method="POST">
+                <form action="/index/save_fuente/" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="titulo">Título</label>
+                        <label for="titulo">Título*</label>
                         <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ingrese el título">
                     </div>
 
