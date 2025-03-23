@@ -12,26 +12,28 @@
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Inicie Sesion</h2>
 
-              <form action="/index/login/" method="POST">
+              <form action="/index/loginStaff/" method="POST">
                 {% csrf_token %}
 
                 <div data-mdb-input-init class="form-outline mb-4">
-                  <input type="text" name="username"  id="username" class="form-control form-control-lg" />
-                  <label class="form-label" for="form3Example3cg">Correo electrónico o Usuario</label>
+                  <input type="text" name="first_name"  id="first_name" class="form-control form-control-lg" />
+                  <label class="form-label" for="first_name">Nombre</label>
+                </div>
+
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <input type="text" name="last_name"  id="last_name" class="form-control form-control-lg" />
+                  <label class="form-label" for="last_name">Apellido</label>
                 </div>
 
                 <div data-mdb-input-init class="form-outline mb-4">
                   <input type="password" name="password" id="password" class="form-control form-control-lg" />
-                  <label class="form-label" for="form3Example4cg">Contraseña</label>
+                  <label class="form-label" for="password">Contraseña</label>
                 </div>
 
                 <div class="d-flex justify-content-center">
                   <button type="submit"  data-mdb-button-init
                     data-mdb-ripple-init class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Iniciar Sesion</button>
                 </div>
-
-                <p class="text-center text-muted mt-5 mb-0">¿No tiene cuenta? <a href="/index/register"
-                    class="fw-bold text-body"><u>Registrese aquí</u></a></p>
 
                 <a href="/index/"class="fw-bold text-body"><u>Volver al menu</u></a>
                 <!-- Muestra mensajes de error -->

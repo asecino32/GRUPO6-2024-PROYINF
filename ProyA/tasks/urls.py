@@ -9,6 +9,9 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),
     path('logout/', views.logout_view, name='logout'),
 
+    path('registerStaff/', views.registerStaff_view, name='registerStaff'),
+    path('loginStaff/', loginStaff_view,  name='loginStaff'),
+
     path('home/subir_boletines', views.subir_boletines_view, name='subir_boletines'),
     path('save_boletin/', views.guardar_boletines_view, name='save_boletin'),
     path('home/agregar_fuentes', views.agregar_fuentes_view, name='agregar_fuentes'),
@@ -17,6 +20,7 @@ urlpatterns = [
     path('del_boletin/', views.del_boletin_view,name='del_boletin'),
 
     path('boletin/', views.consultar_boletin),
+    path('ver_boletin/<int:boletin_id>/', views.ver_boletin, name='ver_boletin'),
     path('ver_fuente/<int:fuente_id>/', views.ver_fuente, name='ver_fuente'),
     
     

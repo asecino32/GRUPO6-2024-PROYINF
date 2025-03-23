@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -5,13 +6,32 @@ from django.db.models import Q
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-
-from .models import Boletin, Fuente
+from django.http import FileResponse
+from .models import Boletin, Fuente, Comentario
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    boletines = Boletin.objects.all()
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "Debes iniciar sesión para comentar.")
+            return redirect('login')
+        
+        boletin_id = request.POST.get('boletin_id')
+        contenido = request.POST.get('contenido')
+
+        boletin = Boletin.objects.get(id_boletin=boletin_id)
+        Comentario.objects.create(
+            boletin=boletin,
+            usuario=request.user,
+            contenido=contenido
+        )
+        messages.success(request, "Comentario publicado correctamente.")
+        return redirect('index')
+
+    return render(request, 'index.html', {'boletines': boletines})
 
 def register_view(request):
     if request.method == 'POST':
@@ -43,8 +63,38 @@ def register_view(request):
 
         messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
         login(request, user)  # Inicia sesión automáticamente después del registro
-        return redirect('home')  
+        return redirect('index')  
     return render(request, 'register.html')
+
+def registerStaff_view(request):
+    if request.method == 'POST':
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        username = re.split('@', email)[0]
+        # Validaciones
+        if not firstName or not lastName or not email or not password1:
+            messages.error(request, 'Todos los campos son obligatorios.')
+            return render(request, 'registerStaff.html')
+
+        if password1 != password2:
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return render(request, 'registerStaff')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'El correo electrónico ya está registrado.')
+            return render(request, 'registerStaff.html')
+
+        # Crear el usuario
+        user = User(username=username, first_name=firstName, last_name=lastName, email=email, password=make_password(password1), is_staff=True)
+        user.save()
+
+        messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
+        login(request, user)  # Inicia sesión automáticamente después del registro
+        return redirect('home')  
+    return render(request, 'registerStaff.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -55,16 +105,46 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         # if user is None:
         #     user = authenticate(request, email=username, password=password)
-
+        print(user)
         if user is not None:
             login(request, user)
             messages.success(request, f'Bienvenido, {username}!')
-            return redirect('home') 
+            return redirect('index') 
         else:
             messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
             return render(request, 'login.html')
 
     return render(request, 'login.html')
+
+def loginStaff_view(request):
+    if request.method == 'POST':
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        password = request.POST.get('password')
+
+        try: # Buscar al usuario por nombre y apellido
+            user = User.objects.get(first_name=firstName, last_name=lastName)
+        except User.DoesNotExist:
+            user = None
+        if user.is_staff == False:
+            user = None
+            messages.error(request, 'No se encontró un usuario con ese nombre y apellido.')
+            return render(request, 'loginStaff.html')
+        if user:
+            # Autenticar con username y password
+            user = authenticate(request, username=user.username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Bienvenido, {firstName}!')
+                return redirect('home')
+            else:
+                messages.error(request, 'Contraseña incorrecta.')
+        else:
+            messages.error(request, 'No se encontró un usuario con ese nombre y apellido.')
+
+        return render(request, 'loginStaff.html')
+
+    return render(request, 'loginStaff.html')
 
 def home_view(request):
     if request.user.is_authenticated:
@@ -162,6 +242,15 @@ def del_boletin_view(request):
 def agregar_fuentes_view(request):
     return render(request, 'agregar_fuentes.html')
 
+def ver_boletin(request, boletin_id):
+    # Obtén el boletín desde la base de datos
+    boletin = get_object_or_404(Boletin, id_boletin=boletin_id)
+
+    # Obtén el archivo PDF asociado al boletín
+    archivo_path = boletin.archivo.path
+
+    # Devuelve el archivo como respuesta para ser visualizado en el navegador
+    return FileResponse(open(archivo_path, 'rb'), content_type='application/pdf')
 
 def consultar_boletin(request):
     if request.method == 'POST':
