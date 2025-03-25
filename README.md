@@ -50,3 +50,6 @@ py manage.py runserver  # Ejecutar el servidor
 
 ## Proyecto a continuar:
 Se continuara trabajando en este repositorio, el mismo proyecto del semestre anterior
+
+## Contexto del proyecto:
+Se busca optimizar la creación de boletines.
