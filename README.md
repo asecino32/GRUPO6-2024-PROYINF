@@ -36,7 +36,20 @@ ALTER USER nombre_usuario WITH PASSWORD 'nueva_contraseña';
 # Finalmente, crear la base de datos "documentos"
 CREATE DATABASE documentos;
 
+
 # En la terminal de Visual Studio Code, navegar hasta la carpeta ProyA (por ejemplo, ../ProyA) y ejecutar los siguientes comandos:
 py manage.py migrate  # Realizar las migraciones
 py manage.py runserver  # Ejecutar el servidor
+```
+# GRUPO19-2025-1-PROYINF
+## Integrantes (se mantienen del semestre anterior): 
+- Eduardo Rodríguez 202273593-7 P201
+- Sebastián Huerta 202273590-2 P201
+- Sebastián Muñoz 202273534-1 P201
+- Sebastián Olea 202273566-K P201<br/>
 
+## Proyecto a continuar:
+Se continuara trabajando en este repositorio, el mismo proyecto del semestre anterior
+
+## Contexto del proyecto:
+Se busca optimizar la creación de boletines.
