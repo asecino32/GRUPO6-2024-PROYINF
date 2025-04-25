@@ -73,12 +73,14 @@ def registerStaff_view(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
-        username = re.split('@', email)[0]
+        codigo = request.POST.get('codigo')
+        username = request.POST.get('email')
         # Validaciones
-        if not firstName or not lastName or not email or not password1:
+        
+        if not firstName or not lastName or not email or not password1 or not codigo:
             messages.error(request, 'Todos los campos son obligatorios.')
             return render(request, 'registerStaff.html')
-
+        
         if password1 != password2:
             messages.error(request, 'Las contraseñas no coinciden.')
             return render(request, 'registerStaff')
@@ -86,7 +88,15 @@ def registerStaff_view(request):
         if User.objects.filter(email=email).exists():
             messages.error(request, 'El correo electrónico ya está registrado.')
             return render(request, 'registerStaff.html')
-
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'El correo electrónico ya está registrado.')
+            return render(request, 'registerStaff.html')
+        
+        if codigo != 'FIA2025':
+            messages.error(request, 'Codigo incorrecto.')
+            return render(request, 'registerStaff.html')
+        
         # Crear el usuario
         user = User(username=username, first_name=firstName, last_name=lastName, email=email, password=make_password(password1), is_staff=True)
         user.save()
@@ -121,15 +131,19 @@ def loginStaff_view(request):
         firstName = request.POST.get('first_name')
         lastName = request.POST.get('last_name')
         password = request.POST.get('password')
+        if not firstName or not lastName or not password:
+            messages.error(request, 'Debes completar todos los campos.')
+            return render(request, 'loginStaff.html')
 
         try: # Buscar al usuario por nombre y apellido
             user = User.objects.get(first_name=firstName, last_name=lastName)
         except User.DoesNotExist:
             user = None
-        if user.is_staff == False:
-            user = None
-            messages.error(request, 'No se encontró un usuario con ese nombre y apellido.')
-            return render(request, 'loginStaff.html')
+        if user != None:
+            if user.is_staff == False:
+                user = None
+                messages.error(request, 'No se encontró un usuario con ese nombre y apellido.')
+                return render(request, 'loginStaff.html')
         if user:
             # Autenticar con username y password
             user = authenticate(request, username=user.username, password=password)

@@ -39,6 +39,11 @@
                   <label class="form-label" for="form3Example4cdg">Repita su contraseña</label>
                 </div>
 
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <input type="password" name="codigo" id="codigo" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example4cdg">Ingrese el codigo de la FIA</label>
+                </div>
+
                 
 
                 <div class="d-flex justify-content-center">
@@ -53,12 +58,15 @@
 
                 <!-- Muestra mensajes de error -->
                 {% if messages %}
-                <ul>
+                  <ul>
                     {% for message in messages %}
+                      {% if message.tags != "success" %}
                         <li>{{ message }}</li>
+                      {% endif %}
                     {% endfor %}
-                </ul>
+                  </ul>
                 {% endif %}
+
               </form>
             </div>
           </div>

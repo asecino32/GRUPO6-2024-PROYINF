@@ -48,12 +48,15 @@
 
                 <!-- Muestra mensajes de error -->
                 {% if messages %}
-                <ul>
+                  <ul>
                     {% for message in messages %}
+                      {% if message.tags != "success" %}
                         <li>{{ message }}</li>
+                      {% endif %}
                     {% endfor %}
-                </ul>
+                  </ul>
                 {% endif %}
+
               </form>
             </div>
           </div>
