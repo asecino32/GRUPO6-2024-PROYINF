@@ -22,6 +22,7 @@ urlpatterns = [
     path('boletin/', views.consultar_boletin),
     path('ver_boletin/<int:boletin_id>/', views.ver_boletin, name='ver_boletin'),
     path('ver_fuente/<int:fuente_id>/', views.ver_fuente, name='ver_fuente'),
-    
+    path('subir_plantilla/', views.subir_plantilla, name='subir_plantilla'),
+    path('crear_boletin/', views.crear_boletin, name='crear_boletin'),
     
 ]

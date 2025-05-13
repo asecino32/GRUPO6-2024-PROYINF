@@ -30,3 +30,10 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.usuario} en {self.boletin.titulo}"
+    
+class PlantillaBoletin(models.Model):
+    nombre = models.CharField(max_length=100)
+    contenido_html = models.TextField()
+
+    def __str__(self):
+        return self.nombre

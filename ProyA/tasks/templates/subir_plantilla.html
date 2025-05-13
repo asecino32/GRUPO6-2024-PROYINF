@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subir Plantilla de Boletín</title>
+</head>
+<body>
+    <h1>Subir Plantilla de Boletín</h1>
+
+    {% if form.errors %}
+        <ul style="color:red;">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p><strong>Nombre de la plantilla:</strong></p>
+        {{ form.nombre }}
+
+        <p><strong>Contenido HTML (escribe o sube archivo .html):</strong></p>
+        {{ form.contenido_html }}
+
+        <p><strong>Archivo HTML (opcional):</strong></p>
+        {{ form.archivo_html }}
+
+        <br>
+        <button type="submit">Guardar Plantilla</button>
+    </form>
+
+    <br>
+    <a href="{% url 'home' %}">Volver a la pagina incial</a>
+</body>
+</html>

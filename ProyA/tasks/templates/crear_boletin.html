@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Boletín</title>
+    <script src="https://cdn.tiny.cloud/1/btwwjsik1mlqa4zw4dcltgzrciffd1p5u3ozk3kf15pimwhd/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#id_contenido_html',
+            height: 600,
+            menubar: false,
+            plugins: 'lists link image preview',
+            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | preview',
+            content_css: 'default'
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('id_plantilla');
+        select.addEventListener('change', function () {
+            const selectedOption = select.options[select.selectedIndex];
+            const contenidoCompleto = selectedOption.getAttribute('data-contenido');
+            
+            // Extraer solo el contenido editable usando regex (similar al backend)
+            const regex = /<!-- CONTENIDO_EDITABLE_INICIO -->(.*?)<!-- CONTENIDO_EDITABLE_FIN -->/s;
+            const match = contenidoCompleto?.match(regex);
+            const contenidoEditable = match ? match[1].trim() : '';
+
+            if (contenidoEditable) {
+                tinymce.get('id_contenido_html').setContent(contenidoEditable);
+            }
+        });
+    });
+    </script>
+</head>
+<body>
+    <h1>Crear Boletín</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <p><strong>Título:</strong></p>
+        {{ form.titulo }}
+
+        <p><strong>Ciudad tratada:</strong></p>
+        {{ form.ciudad_tratada }}
+
+        <p><strong>Temática:</strong></p>
+        {{ form.tematica }}
+
+        <p><strong>Fuente del boletín:</strong></p>
+        {{ form.fuente_boletin }}
+
+        <p><strong>Seleccionar plantilla:</strong></p>
+        <select id="id_plantilla" name="plantilla">
+            <option value="">---------</option>
+            {% for plantilla in form.fields.plantilla.queryset %}
+                <option value="{{ plantilla.id }}" data-contenido="{{ plantilla.contenido_html|escape }}">{{ plantilla.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <p><strong>Contenido HTML editable:</strong></p>
+        {{ form.contenido_html }}
+
+        <br><br>
+        <button type="submit">Generar PDF</button>
+    </form>
+
+    <br>
+    <a href="{% url 'home' %}">Volver a la página inicial</a>
+</body>
+</html>
