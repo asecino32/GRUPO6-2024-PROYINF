@@ -268,6 +268,15 @@ def del_boletin_view(request):
 def agregar_fuentes_view(request):
     return render(request, 'agregar_fuentes.html')
 
+def ver_boletin(request, boletin_id):
+    # Obtén el boletín desde la base de datos
+    boletin = get_object_or_404(Boletin, id_boletin=boletin_id)
+
+    # Obtén el archivo PDF asociado al boletín
+    archivo_path = boletin.archivo.path
+
+    # Devuelve el archivo como respuesta para ser visualizado en el navegador
+    return FileResponse(open(archivo_path, 'rb'), content_type='application/pdf')
 
 @login_required
 def consultar_boletin(request):
@@ -308,6 +317,29 @@ def ver_fuente(request, fuente_id):
     # Renderizar el template con los detalles del objeto
     return render(request, 'ver_fuente.html', {'fuente': fuente})
 
+""" @login_required
+def crear_boletin(request):
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+
+    plantillas = PlantillaBoletin.objects.all()
+
+    if request.method == 'POST':
+        plantilla_id = request.POST.get('plantilla_id')
+        contenido_personalizado = request.POST.get('contenido')
+        plantilla = get_object_or_404(PlantillaBoletin, id=plantilla_id)
+
+        # Aquí podrías guardar el boletín creado en la base de datos si lo deseas
+
+        contenido_final = plantilla.contenido_html.replace("{{contenido}}", contenido_personalizado)
+
+        return render(request, 'ver_boletin.html', {
+            'contenido_final': contenido_final,
+        })
+
+    return render(request, 'crear_boletin.html', {
+        'plantillas': plantillas
+    }) """
 
 @login_required
 def subir_plantilla(request):
