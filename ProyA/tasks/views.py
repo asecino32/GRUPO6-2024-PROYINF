@@ -268,15 +268,6 @@ def del_boletin_view(request):
 def agregar_fuentes_view(request):
     return render(request, 'agregar_fuentes.html')
 
-def ver_boletin(request, boletin_id):
-    # Obtén el boletín desde la base de datos
-    boletin = get_object_or_404(Boletin, id_boletin=boletin_id)
-
-    # Obtén el archivo PDF asociado al boletín
-    archivo_path = boletin.archivo.path
-
-    # Devuelve el archivo como respuesta para ser visualizado en el navegador
-    return FileResponse(open(archivo_path, 'rb'), content_type='application/pdf')
 
 @login_required
 def consultar_boletin(request):
@@ -317,29 +308,6 @@ def ver_fuente(request, fuente_id):
     # Renderizar el template con los detalles del objeto
     return render(request, 'ver_fuente.html', {'fuente': fuente})
 
-@login_required
-def crear_boletin(request):
-    if not request.user.is_staff:
-        return HttpResponse("Acceso denegado", status=403)
-
-    plantillas = PlantillaBoletin.objects.all()
-
-    if request.method == 'POST':
-        plantilla_id = request.POST.get('plantilla_id')
-        contenido_personalizado = request.POST.get('contenido')
-        plantilla = get_object_or_404(PlantillaBoletin, id=plantilla_id)
-
-        # Aquí podrías guardar el boletín creado en la base de datos si lo deseas
-
-        contenido_final = plantilla.contenido_html.replace("{{contenido}}", contenido_personalizado)
-
-        return render(request, 'ver_boletin.html', {
-            'contenido_final': contenido_final,
-        })
-
-    return render(request, 'crear_boletin.html', {
-        'plantillas': plantillas
-    })
 
 @login_required
 def subir_plantilla(request):
@@ -373,87 +341,61 @@ def crear_boletin(request):
         if form.is_valid():
             boletin = form.save(commit=False)
             plantilla = form.cleaned_data['plantilla']
-            contenido_editable = form.cleaned_data['contenido_html']
+            contenido_editor = form.cleaned_data['contenido_html']
 
-            # Extraer solo el contenido editable de la plantilla (si existe)
+            # Pre-formatear todas las variables (incluyendo el año)
+            contexto = {
+                'titulo': boletin.titulo,
+                'ciudad_tratada': boletin.ciudad_tratada,
+                'tematica': boletin.tematica,
+                'fuente_url': boletin.fuente_boletin.url if boletin.fuente_boletin else '#',
+                'fecha_creacion': timezone.now().strftime('%Y-%m-%d'),  # Fecha completa
+                'ano_actual': timezone.now().strftime('%Y'),  # Solo el año
+                'contenido_editor': contenido_editor,
+            }
+
             if plantilla:
-                contenido_plantilla = plantilla.contenido_html
-                # Usar regex para obtener el contenido entre las marcas
-                editable_match = re.search(
-                    r'<!-- CONTENIDO_EDITABLE_INICIO -->(.*?)<!-- CONTENIDO_EDITABLE_FIN -->', 
-                    contenido_plantilla, 
-                    re.DOTALL
+                contenido_final = plantilla.contenido_html
+                
+                # Reemplazar variables (incluyendo el año)
+                contenido_final = contenido_final.replace('{{ titulo }}', contexto['titulo'])
+                contenido_final = contenido_final.replace('{{ ciudad_tratada }}', contexto['ciudad_tratada'])
+                contenido_final = contenido_final.replace('{{ tematica }}', contexto['tematica'])
+                contenido_final = contenido_final.replace('{{ fuente_boletin }}', contexto['fuente_url'])
+                contenido_final = contenido_final.replace('{{ fecha_creacion }}', contexto['fecha_creacion'])
+                contenido_final = contenido_final.replace('{{ fecha_creacion|date:"Y" }}', contexto['ano_actual'])  # Filtro de año
+                
+                # Reemplazar contenido editable
+                contenido_final = re.sub(
+                    r'<!-- CONTENIDO_EDITABLE_INICIO -->.*?<!-- CONTENIDO_EDITABLE_FIN -->',
+                    f'<!-- CONTENIDO_EDITABLE_INICIO -->{contenido_editor}<!-- CONTENIDO_EDITABLE_FIN -->',
+                    contenido_final,
+                    flags=re.DOTALL
                 )
-                if editable_match:
-                    contenido_editable = editable_match.group(1).strip()
+            else:
+                contenido_final = f"""
+                <!DOCTYPE html>
+                <html>
+                <body>
+                    <!-- Encabezado -->
+                    <h1>{contexto['titulo']}</h1>
+                    <p>Fecha: {contexto['fecha_creacion']} (Año: {contexto['ano_actual']})</p>
+                    
+                    <!-- Contenido -->
+                    <div class="contenido">{contexto['contenido_editor']}</div>
+                    
+                    <!-- Pie de página -->
+                    <footer>© {contexto['ano_actual']}</footer>
+                </body>
+                </html>
+                """
 
-            # Crear un HTML estructurado con los campos del formulario y el contenido editable
-            html_content = f"""
-            <!DOCTYPE html>
-            <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <title>Boletín: {boletin.titulo}</title>
-                <style>
-                    body {{
-                        font-family: Arial, sans-serif;
-                        line-height: 1.6;
-                        margin: 40px;
-                    }}
-                    header {{
-                        text-align: center;
-                        padding-bottom: 20px;
-                        border-bottom: 2px solid #4CAF50;
-                    }}
-                    h1 {{
-                        color: #4CAF50;
-                    }}
-                    .metadata {{
-                        margin-bottom: 30px;
-                        font-size: 0.9em;
-                        color: #555;
-                    }}
-                    .contenido {{
-                        margin-top: 20px;
-                    }}
-                    footer {{
-                        margin-top: 40px;
-                        border-top: 1px solid #ccc;
-                        text-align: center;
-                        font-size: 0.8em;
-                        color: #555;
-                    }}
-                </style>
-            </head>
-            <body>
-                <header>
-                    <h1>{boletin.titulo}</h1>
-                    <div class="metadata">
-                        <p><strong>Ciudad tratada:</strong> {boletin.ciudad_tratada} | <strong>Temática:</strong> {boletin.tematica}</p>
-                        <p><strong>Fuente:</strong> {boletin.fuente_boletin.titulo if boletin.fuente_boletin else 'N/A'}</p>
-                        <p><strong>Fecha:</strong> {timezone.now().strftime('%Y-%m-%d')}</p>
-                    </div>
-                </header>
-
-                <div class="contenido">
-                    {contenido_editable}
-                </div>
-
-                <footer>
-                    Fuente: {boletin.fuente_boletin.titulo if boletin.fuente_boletin else 'N/A'} — © {timezone.now().strftime('%Y')}
-                </footer>
-            </body>
-            </html>
-            """
-
-            # Generar PDF en memoria con BytesIO
+            # Generar PDF (el resto del código se mantiene igual)
             pdf_buffer = BytesIO()
-            HTML(string=html_content).write_pdf(pdf_buffer)
+            HTML(string=contenido_final).write_pdf(pdf_buffer)
             pdf_buffer.seek(0)
-
-            nombre_archivo = f'boletin_{datetime.now().strftime("%Y%m%d%H%M%S")}.pdf'
-            boletin.archivo.save(nombre_archivo, ContentFile(pdf_buffer.read()))
-
+            
+            boletin.archivo.save(f'boletin_{datetime.now().strftime("%Y%m%d%H%M%S")}.pdf', ContentFile(pdf_buffer.read()))
             boletin.save()
             return redirect('home')
     else:
