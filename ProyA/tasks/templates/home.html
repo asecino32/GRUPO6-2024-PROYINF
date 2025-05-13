@@ -14,7 +14,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="flex-grow-1 text-center">
                 {% if request.user.is_authenticated %}
-                    <h1 style="font-size: 48px;">Bienvenido, {{user.first_name}}!</h1>
+                    <h1 style="font-size: 48px;">Bienvenido {{user.first_name}}!</h1>
                 {% else %}
                     <h1 style="font-size: 48px;">Bienvenido, invitado, a la Sección de Boletines!</h1>
                 {% endif %}
