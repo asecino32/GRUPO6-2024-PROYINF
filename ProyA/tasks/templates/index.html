@@ -117,45 +117,47 @@
     <div class="container">
         <h1>Lista de Boletines</h1>
         {% for boletin in boletines %}
-            <form action="/index/" method="POST">
-                <div class="boletin">
-                    <h3><strong>Titulo:</strong> {{ boletin.titulo }}</h3>
-                    <p><strong>Ciudad:</strong> {{ boletin.ciudad_tratada }}</p>
-                    <p><strong>Temática:</strong> {{ boletin.tematica }}</p>
-                    
-                    <p><strong>Fuente:</strong> {{ boletin.fuente_boletin.titulo }}  <a href="{% url 'ver_fuente' boletin.fuente_boletin_id %}">(Detalles de la fuente)</a></p>
-                    
+        <form action="/index/" method="POST">
+            <div class="boletin">
+                <h3><strong>Titulo:</strong> {{ boletin.titulo }}</h3>
+                <p><strong>Ciudad:</strong> {{ boletin.ciudad_tratada }}</p>
+                <p><strong>Temática:</strong> {{ boletin.tematica }}</p>
+                <p><strong>Fuente:</strong> {{ boletin.fuente_boletin.titulo }}  <a href="{% url 'ver_fuente' boletin.fuente_boletin_id %}">(Detalles de la fuente)</a></p>
 
-                    <a href="{% url 'ver_boletin' boletin.id_boletin %}" target="_blank" class="btn btn-link">Ver Boletin</a>
-                    <a href="{% url 'ver_boletin' boletin.id_boletin %}?download=true" class="btn btn-link">Descargar Boletin</a>
-                    <div class="comentarios">
-                        <h4>Comentarios:</h4>
-                        <ul>
-                            {% for comentario in boletin.comentarios.all %}
-                                <li>
-                                    <strong>{{ comentario.usuario.username }}:</strong> {{ comentario.contenido }}
-                                    <br>
-                                    <small>{{ comentario.fecha }}</small>
-                                </li>
-                            {% empty %}
-                                <li>No hay comentarios.</li>
-                            {% endfor %}
-                        </ul>
+                <a href="{% url 'ver_boletin' boletin.id_boletin %}" target="_blank" class="btn btn-link">Ver Boletin</a>
+                <a href="{% url 'ver_boletin' boletin.id_boletin %}?download=true" class="btn btn-link">Descargar Boletin</a>
 
-                        {% if user.is_authenticated %}
-                            <form method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="boletin_id" value="{{ boletin.id_boletin }}">
-                                <textarea name="contenido" rows="2" style="width:100%" placeholder="Escribe un comentario..." required></textarea>
-                                <button type="submit">Comentar</button>
-                            </form>
-                        {% else %}
-                            <p>Debes iniciar sesión para comentar.</p>
-                        {% endif %}
-                    </div>
+                <div class="comentarios">
+                    <h4>Comentarios:</h4>
+                    <ul>
+                        {% for comentario in boletin.comentarios.all %}
+                            <li>
+                                <strong>{{ comentario.usuario.username }}:</strong> {{ comentario.contenido }}
+                                <br>
+                                <small>{{ comentario.fecha }}</small>
+                            </li>
+                        {% empty %}
+                            <li>No hay comentarios.</li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if user.is_authenticated %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="boletin_id" value="{{ boletin.id_boletin }}">
+                            <textarea name="contenido" rows="2" style="width:100%" placeholder="Escribe un comentario..." required></textarea>
+                            <button type="submit">Comentar</button>
+                        </form>
+                    {% else %}
+                        <p>Debes iniciar sesión para comentar.</p>
+                    {% endif %}
                 </div>
-            </form>
-        {% endfor %}
+            </div>
+        </form>
+    {% empty %}
+        <p>No hay boletines disponibles en este momento.</p>
+    {% endfor %}
+
     </div>
 </body>
 </html>
