@@ -85,10 +85,10 @@ WSGI_APPLICATION = 'analisis.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "papu",
+        "NAME": "documentos",
         "USER": "postgres",
-        "PASSWORD": "ingeso",
-        "HOST": "localhost",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.3",
         "PORT": "5432",
     }
 }
