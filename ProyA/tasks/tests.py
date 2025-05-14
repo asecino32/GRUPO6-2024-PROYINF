@@ -76,7 +76,7 @@ class StaffLoginEndpointTests(TestCase):
         cls.normal_user.delete()
         super().tearDownClass()
 
-    def test_staff_login(self):
+    def test_staff_login_success(self):
         response = self.client.post(self.login_staff_url, {
             'first_name': 'Staff',
             'last_name': 'User',
