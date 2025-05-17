@@ -167,8 +167,11 @@ def loginStaff_view(request):
 
     return render(request, 'loginStaff.html')
 
+@login_required
 def home_view(request):
-    if request.user.is_authenticated:
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+    elif request.user.is_authenticated:
         return render(request, 'home.html', {'usuario': request.user})
     else:
         return render(request, 'login.html') 
@@ -177,7 +180,7 @@ def logout_view(request):
     logout(request) 
     return redirect('index')
 
-def filtrar_boletines(request):
+""" def filtrar_boletines(request):
     boletines = Boletin.objects.all()  # Obtener todos los boletines como punto de partida
     
     # Filtrar boletines si se ha enviado el formulario
@@ -203,12 +206,19 @@ def filtrar_boletines(request):
 
     # Renderizar la plantilla 'home.html' y pasar los boletines filtrados
     return render(request, 'home.html', {'boletines': boletines})
-
+ """
+@login_required
 def subir_boletines_view(request):
-    return render(request, 'subir_boletines.html')
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+    else:
+        return render(request, 'subir_boletines.html')
 
 @login_required
 def guardar_boletines_view(request):
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+    
     if request.method == 'POST':
         archivo_pdf = request.FILES.get('archivo_pdf')  # Captura el archivo PDF
         titulo_boletin=request.POST['titulo']
@@ -237,6 +247,8 @@ def guardar_boletines_view(request):
 
 @login_required
 def guardar_fuente_view(request):
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
     if request.method == 'POST':
         titulo_fuente=request.POST['titulo']
         
@@ -255,10 +267,16 @@ def guardar_fuente_view(request):
         return redirect('agregar_fuentes')
     
 def eliminar_boletin_view(request):
-    return render(request, 'eliminar_boletin.html')
+    
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+    else:
+        return render(request, 'eliminar_boletin.html')
 
 @login_required
 def del_boletin_view(request):
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
     boletin = Boletin(id_boletin = request.POST['id'])
     boletin.delete()
     messages.success(request, 'Se elimino exitosamente el boletin.')
@@ -266,11 +284,16 @@ def del_boletin_view(request):
 
 @login_required
 def agregar_fuentes_view(request):
-    return render(request, 'agregar_fuentes.html')
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
+    else:
+        return render(request, 'agregar_fuentes.html')
 
 
 @login_required
 def consultar_boletin(request):
+    if not request.user.is_staff:
+        return HttpResponse("Acceso denegado", status=403)
     if request.method == 'POST':
         titulo = request.POST.get('titulo', '').strip()
         ciudad_tratada = request.POST.get('ciudad_tratada', '').strip()

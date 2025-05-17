@@ -54,7 +54,7 @@ class LoginEndpointTests(TestCase):
         self.assertContains(response, 'Nombre de usuario o contraseña incorrectos.')
     
 
-class StaffEndpointTests(TestCase):
+class StaffLoginEndpointTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -99,8 +99,8 @@ class StaffEndpointTests(TestCase):
         self.client.login(username='normal@example.com', password='testpass123')
         response = self.client.get(self.home_url)
 
-        
+        # Dependiendo de tu implementación puedes esperar:
         self.assertIn(response.status_code, [302, 403])
-        
+        # O verificar que redirige al login
         if response.status_code == 302:
             self.assertIn(reverse('login'), response.url)
