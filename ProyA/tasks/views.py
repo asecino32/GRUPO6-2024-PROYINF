@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.http import FileResponse, HttpResponse
 from .models import Boletin, Fuente, Comentario, PlantillaBoletin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import PlantillaBoletinForm, CrearBoletinForm
 from django.core.files import File
 from io import BytesIO
@@ -17,6 +17,12 @@ from django.template import Context, Template
 from weasyprint import HTML
 from django.utils import timezone
 
+def generar_contenido_final(plantilla, contexto):
+    template = Template(plantilla.contenido_html)
+    return template.render(Context(contexto))
+
+def staff_check(user):
+    return user.is_authenticated and user.is_staff
 
 def index(request):
     boletines = Boletin.objects.all()
@@ -167,7 +173,7 @@ def loginStaff_view(request):
 
     return render(request, 'loginStaff.html')
 
-@login_required
+@user_passes_test(staff_check)
 def home_view(request):
     if not request.user.is_staff:
         return HttpResponse("Acceso denegado", status=403)
@@ -388,7 +394,13 @@ def subir_plantilla(request):
         form = PlantillaBoletinForm()
     
     return render(request, 'subir_plantilla.html', {'form': form})
-
+'''
+try:
+    HTML(string=contenido_final).write_pdf(pdf_buffer)
+except Exception as e:
+    messages.error(request, f"Error al generar PDF: {str(e)}")
+    return redirect('crear_boletin')
+'''
 @login_required
 def crear_boletin(request):
     if not request.user.is_staff:
@@ -450,7 +462,11 @@ def crear_boletin(request):
 
             # Generar PDF (el resto del código se mantiene igual)
             pdf_buffer = BytesIO()
-            HTML(string=contenido_final).write_pdf(pdf_buffer)
+            try:
+                HTML(string=contenido_final).write_pdf(pdf_buffer)
+            except Exception as e:
+                messages.error(request, f"Error al generar PDF: {str(e)}")
+                return redirect('crear_boletin')
             pdf_buffer.seek(0)
             
             boletin.archivo.save(f'boletin_{datetime.now().strftime("%Y%m%d%H%M%S")}.pdf', ContentFile(pdf_buffer.read()))

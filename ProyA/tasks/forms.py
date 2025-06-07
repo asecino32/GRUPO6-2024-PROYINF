@@ -1,20 +1,31 @@
 from django import forms
 from .models import Boletin, PlantillaBoletin, Fuente
+from django.core.validators import RegexValidator
 
 class PlantillaBoletinForm(forms.ModelForm):
     archivo_html = forms.FileField(required=False, help_text="Solo se permiten archivos .html")
-
+    
+    # Aquí se define explícitamente el campo contenido_html con sus validadores
+    contenido_html = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 20, 'cols': 100}),
+        required=False,
+        validators=[
+            RegexValidator(
+                regex=r'\{\{.*?\}\}',
+                message="Debe incluir al menos una variable entre dobles llaves",
+                inverse_match=False  # Cambiado a False para que REQUIERA el patrón
+            )
+        ]
+    )
+    
     class Meta:
         model = PlantillaBoletin
         fields = ['nombre', 'contenido_html', 'archivo_html']
-        widgets = {
-            'contenido_html': forms.Textarea(attrs={'rows': 20, 'cols': 100}),
-        }
+        # Eliminamos el widget de aquí ya que lo definimos arriba
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Hacemos que el contenido_html no sea obligatorio en el formulario
-        self.fields['contenido_html'].required = False
+        # Ya no es necesario hacer required=False aquí porque lo definimos arriba
 
     def clean_archivo_html(self):
         archivo = self.cleaned_data.get('archivo_html')
@@ -34,7 +45,6 @@ class PlantillaBoletinForm(forms.ModelForm):
             )
 
         return cleaned_data
-
 
 class CrearBoletinForm(forms.ModelForm):
     plantilla = forms.ModelChoiceField(

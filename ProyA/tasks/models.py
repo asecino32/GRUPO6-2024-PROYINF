@@ -1,7 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
-# Create your models here.
+class StaffProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)
+    #mas campos a futuro
 
 class Fuente(models.Model):
     id_fuente = models.AutoField(primary_key=True)
