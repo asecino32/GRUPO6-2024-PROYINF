@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     boletinForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const titulo = document.getElementById('titulo').value;
-        const contenido = document.getElementById('contenido').value;
         alert(`Boletín enviado: ${titulo}`);
         // Aquí agregar lógica para enviar el boletín al servidor
     });
