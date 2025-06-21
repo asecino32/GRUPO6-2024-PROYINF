@@ -16,6 +16,10 @@ from django.core.files.base import ContentFile
 from django.template import Context, Template
 from weasyprint import HTML
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
+REGISTER_TEMPLATE = 'register.html'
+STAFF_TEMPLATE = 'registerStaff.html'
 
 def generar_contenido_final(plantilla, contexto):
     template = Template(plantilla.contenido_html)
@@ -56,19 +60,19 @@ def register_view(request):
         # Validaciones
         if not username or not email or not password1:
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'register.html')
+            return render(request, REGISTER_TEMPLATE)
 
         if password1 != password2:
             messages.error(request, 'Las contraseñas no coinciden.')
-            return render(request, 'register.html')
+            return render(request, REGISTER_TEMPLATE)
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'El nombre de usuario ya está en uso.')
-            return render(request, 'register.html')
+            return render(request, REGISTER_TEMPLATE)
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'El correo electrónico ya está registrado.')
-            return render(request, 'register.html')
+            return render(request, REGISTER_TEMPLATE)
 
         # Crear el usuario
         user = User(username=username, email=email, password=make_password(password1))
@@ -77,7 +81,7 @@ def register_view(request):
         messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
         login(request, user)  # Inicia sesión automáticamente después del registro
         return redirect('index')  
-    return render(request, 'register.html')
+    return render(request, REGISTER_TEMPLATE)
 
 def registerStaff_view(request):
     if request.method == 'POST':
@@ -92,7 +96,7 @@ def registerStaff_view(request):
         
         if not firstName or not lastName or not email or not password1 or not codigo:
             messages.error(request, 'Todos los campos son obligatorios.')
-            return render(request, 'registerStaff.html')
+            return render(request, STAFF_TEMPLATE)
         
         if password1 != password2:
             messages.error(request, 'Las contraseñas no coinciden.')
@@ -100,15 +104,15 @@ def registerStaff_view(request):
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'El correo electrónico ya está registrado.')
-            return render(request, 'registerStaff.html')
+            return render(request, STAFF_TEMPLATE)
         
         if User.objects.filter(email=email).exists():
             messages.error(request, 'El correo electrónico ya está registrado.')
-            return render(request, 'registerStaff.html')
+            return render(request, STAFF_TEMPLATE)
         
         if codigo != 'FIA2025':
             messages.error(request, 'Codigo incorrecto.')
-            return render(request, 'registerStaff.html')
+            return render(request, STAFF_TEMPLATE)
         
         # Crear el usuario
         user = User(username=username, first_name=firstName, last_name=lastName, email=email, password=make_password(password1), is_staff=True)
@@ -117,8 +121,9 @@ def registerStaff_view(request):
         messages.success(request, 'Tu cuenta ha sido creada exitosamente. Ahora puedes iniciar sesión.')
         login(request, user)  # Inicia sesión automáticamente después del registro
         return redirect('home')  
-    return render(request, 'registerStaff.html')
+    return render(request, STAFF_TEMPLATE)
 
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -139,6 +144,7 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+@csrf_exempt
 def loginStaff_view(request):
     if request.method == 'POST':
         firstName = request.POST.get('first_name')
