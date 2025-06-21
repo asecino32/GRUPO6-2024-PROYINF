@@ -4,6 +4,8 @@
 
 Se priorizaron los quality issues de **severidad alta** porque representan riesgos significativos para la mantenibilidad, seguridad y correcto funcionamiento del sistema. Estos problemas pueden provocar errores críticos, vulnerabilidades o dificultar el mantenimiento futuro del código. Al abordarlos primero, se garantiza una base de código más robusta y confiable.
 
+**No se cambió la quality issue de severidad blocked** porque, de hacerlo, el ayudante no podría acceder al proyecto. Por esta razón, se mantuvo dicha issue para asegurar la accesibilidad y revisión del sistema durante la evaluación.
+
 ## Resultados tras la corrección
 
 - Se eliminaron duplicaciones de código y literales, mejorando la mantenibilidad.
@@ -11,4 +13,4 @@ Se priorizaron los quality issues de **severidad alta** porque representan riesg
 - El código es ahora más limpio, consistente y fácil de modificar.
 - Las herramientas de análisis estático (como SonarScanner) ya no reportan issues críticos en las áreas inspeccionadas.
 
-La atención a estos quality issues ha reducido el riesgo de fallos graves y ha mejorado la calidad general del sistema.
+La atención a estos quality issues ha reducido el riesgo de fallos graves y ha mejorado la calidad
