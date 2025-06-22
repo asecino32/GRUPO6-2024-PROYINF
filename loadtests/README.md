@@ -2,7 +2,7 @@
 
 ## Gráfico de Response Time
 
-A continuación se presenta un gráfico del tiempo de respuesta (`Response Time Graph`) obtenido durante las pruebas de carga con Apache JMeter en 3 endpoints (Login Usuario, Login Trabajador (Staff, Home que es la pagina para los trabajadores), ubicado en esta carpeta (`loadtests/`). El gráfico muestra la evolución del tiempo de respuesta bajo diferentes escenarios de bombardeo de usuarios concurrentes.
+A continuación se presenta un gráfico del tiempo de respuesta (`Response Time Graph`) obtenido durante las pruebas de carga con Apache JMeter en 3 endpoints (Login Usuario, Login Trabajador (Staff), Home que es la pagina para los trabajadores), ubicado en esta carpeta (`loadtests/`). El gráfico muestra la evolución del tiempo de respuesta bajo diferentes escenarios de bombardeo de usuarios concurrentes.
 
 ![Response Time Graph](response_time_graph.png)
 
