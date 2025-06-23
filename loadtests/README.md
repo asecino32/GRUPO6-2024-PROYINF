@@ -1,10 +1,10 @@
 # Pruebas de Carga (Load Testing)
 
-Se hicieron pruebas de carga con Apache JMeter en 3 endpoints (Login Usuario, Login Trabajador (Staff), Home que es la pagina para los trabajadores), cuyos resultados estan ubicados en esta carpeta (`loadtests/`)
+Se hicieronw 3 pruebas de carga con Apache JMeter, una de ellas, la cual tomamos los resultados, ataca a 3 endpoints (Login Usuario, Login Trabajador (Staff), Home que es la pagina para los trabajadores), cuyos resultados estan ubicados en esta carpeta (`loadtests/`)
 
 ## Observaciones y Resultados
 
-Durante las pruebas, se observó que al configurar **más de 1000 usuarios concurrentes** en Apache JMeter, el programa no logra detenerse correctamente y el sistema bajo prueba comienza a mostrar comportamientos inesperados. Esto evidencia que el sistema no está preparado para manejar una carga tan alta de usuarios simultáneos, lo que puede deberse a limitaciones de recursos, cuellos de botella en la aplicación o en la infraestructura, o falta de optimización en el manejo de concurrencia.
+Durante las pruebas, se observó que al configurar **más de 1000 usuarios concurrentes** en Apache JMeter, el programa no logra detenerse correctamente debido a un bug de las pruebas y el sistema bajo prueba comienza a mostrar comportamientos inesperados. Esto evidencia que el sistema no está preparado para manejar una carga tan alta de usuarios simultáneos, lo que puede deberse a limitaciones de recursos, cuellos de botella en la aplicación o en la infraestructura, o falta de optimización en el manejo de concurrencia.
 
 En el gráfico, se puede ver que:
 - El tiempo de respuesta inicial es alto y luego tiende a estabilizarse, pero nunca baja de cierto umbral.
