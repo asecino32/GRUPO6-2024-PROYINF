@@ -6,7 +6,7 @@ Se hicieronw 3 pruebas de carga con Apache JMeter, una de ellas, la cual tomamos
 
 Durante las pruebas, se observó que al configurar **más de 1000 usuarios concurrentes** en Apache JMeter, el programa no logra detenerse correctamente debido a un bug de las pruebas y el sistema bajo prueba comienza a mostrar comportamientos inesperados. Esto evidencia que el sistema no está preparado para manejar una carga tan alta de usuarios simultáneos, lo que puede deberse a limitaciones de recursos, cuellos de botella en la aplicación o en la infraestructura, o falta de optimización en el manejo de concurrencia.
 
-![Grafico_tiempo_respuesta](Grafico_tiempo_respuesta.png)
+![Grafico_tiempo_respuesta](Grafico_tiempo_respuesta_new.png)
 
 En el gráfico, se puede ver que:
 - El tiempo de respuesta inicial es alto y luego tiende a estabilizarse, pero nunca baja de cierto umbral.
